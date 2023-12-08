@@ -26,8 +26,7 @@ const ErrorPage = () => {
       const timeOfScan = state.timeOfScan;
       const timeOfError = new Date();
       const log = await services.getErrorLog(timeOfScan, timeOfError);
-      const alog = "hi"
-      setErrorLog(alog);
+      setErrorLog(log);
     }
     getErrorLog();
   }, []);

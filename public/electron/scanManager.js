@@ -618,15 +618,14 @@ const init = (scanEvent) => {
       const regex = /{.*?}/gs; 
       const entries = errorLog.match(regex);
   
-      const allErrors = "";
-      for (entry of entries){
+      let allErrors = "";
+      for (const entry of entries){
         const jsonEntry = JSON.parse(entry);
         const timeOfEntry = new Date(jsonEntry['timestamp'])
-        if (timeOfEntry.getTime()>=timeOfScan.getTime() && timeOfEntry.getTime()<=timeOfError.getTime()){
-          allErrors=allErrors.concat(entry,"\n")
+        if (timeOfEntry.getTime() >= timeOfScan.getTime() && timeOfEntry.getTime() <= timeOfError.getTime()){
+          allErrors = allErrors.concat(entry,"\n")
         }
       }
-      console.log(allErrors);
       return allErrors;
   })
 
