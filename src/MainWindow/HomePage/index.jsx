@@ -146,6 +146,8 @@ const HomePage = ({ isProxy, appVersionInfo, setCompletedScanId }) => {
 
   const startScan = async (scanDetails) => {
     scanDetails.browser = isProxy ? "edge" : browser;
+    const timeOfScan = new Date();
+    console.log(timeOfScan,"homepage index")
 
     if (scanDetails.scanUrl.length === 0) {
       setScanButtonIsClicked(false);
@@ -173,72 +175,75 @@ const HomePage = ({ isProxy, appVersionInfo, setCompletedScanId }) => {
 
     window.localStorage.setItem("scanDetails", JSON.stringify(scanDetails));
 
-    const checkUrlResponse = await services.validateUrlConnectivity(scanDetails);
+    //DELETE later - recomment the below back in
+    navigate('/error', { state: { timeOfScan }});
+    return; 
+  //   const checkUrlResponse = await services.validateUrlConnectivity(scanDetails);
 
-    if (checkUrlResponse.success) {
-       if (scanDetails.scanType === 'Custom flow') {
-          navigate('/custom_flow', { state: { scanDetails }});
-          return;
-        } else {
-          navigate('/scanning', { state: { url: scanDetails.scanUrl } });
-          const scanResponse = await services.startScan(scanDetails);
+  //   if (checkUrlResponse.success) {
+  //      if (scanDetails.scanType === 'Custom flow') {
+  //         navigate('/custom_flow', { state: { scanDetails }});
+  //         return;
+  //       } else {
+  //         navigate('/scanning', { state: { url: scanDetails.scanUrl } });
+  //         const scanResponse = await services.startScan(scanDetails);
           
-          if (scanResponse.failedToCreateExportDir) {
-            setPrevUrlErrorMessage('Unable to create download directory');
-            return;
-          }
+  //         if (scanResponse.failedToCreateExportDir) {
+  //           setPrevUrlErrorMessage('Unable to create download directory');
+  //           return;
+  //         }
 
-          if (scanResponse.success) {
-            setCompletedScanId(scanResponse.scanId);
-            navigate("/result");
-            return;
-          } else {
-            /* When no pages were scanned (e.g. out of domain upon redirects when valid URL was entered),
-                redirects user to error page to going to result page with empty result */
-            navigate("/error");
-            return; 
-          }   
-        }
-    } else {
-      setScanButtonIsClicked(false);
-      if (checkUrlResponse.failedToCreateExportDir) {
-        setPrevUrlErrorMessage('Unable to create download directory');
-        return;
-      }
+  //         if (scanResponse.success) {
+  //           setCompletedScanId(scanResponse.scanId);
+  //           navigate("/result");
+  //           return;
+  //         } else {
+  //           /* When no pages were scanned (e.g. out of domain upon redirects when valid URL was entered),
+  //               redirects user to error page to going to result page with empty result */
+  //           navigate("/error");
+  //           return; 
+  //         }   
+  //       }
+  //   } else {
+  //     setScanButtonIsClicked(false);
+  //     if (checkUrlResponse.failedToCreateExportDir) {
+  //       setPrevUrlErrorMessage('Unable to create download directory');
+  //       return;
+  //     }
 
-      if (cliErrorCodes.has(checkUrlResponse.statusCode)) {
-        let errorMessageToShow;
-        switch (checkUrlResponse.statusCode) {
-          /* technically urlErrorTypes.invalidUrl is not needed since this case
-          was handled above, but just for completeness */
-          case cliErrorTypes.unauthorisedBasicAuth:
-            errorMessageToShow = "Unauthorised Basic Authentication.";
-            break;
-          case cliErrorTypes.invalidUrl:
-          case cliErrorTypes.cannotBeResolved:
-          case cliErrorTypes.errorStatusReceived:
-            errorMessageToShow = "Invalid URL.";
-            break;
-          case cliErrorTypes.notASitemap:
-            errorMessageToShow = "Invalid sitemap.";
-            break;
-          case cliErrorTypes.browserError:
-            navigate('/error', { state: { isBrowserError: true }});
-            return;
-          case cliErrorTypes.systemError:
-          default:
-            errorMessageToShow = "Something went wrong. Please try again later.";
-        }
-        console.log(`status error: ${checkUrlResponse.statusCode}`);
-        setPrevUrlErrorMessage(errorMessageToShow);
-        return;
-      } else if (checkUrlResponse.statusCode) {
-        console.error(
-          `unexpected status error: (code ${checkUrlResponse.statusCode})`,
-          checkUrlResponse.message
-        );
-      }  
-    }
+  //     if (cliErrorCodes.has(checkUrlResponse.statusCode)) {
+  //       let errorMessageToShow;
+  //       switch (checkUrlResponse.statusCode) {
+  //         /* technically urlErrorTypes.invalidUrl is not needed since this case
+  //         was handled above, but just for completeness */
+  //         case cliErrorTypes.unauthorisedBasicAuth:
+  //           errorMessageToShow = "Unauthorised Basic Authentication.";
+  //           break;
+  //         case cliErrorTypes.invalidUrl:
+  //         case cliErrorTypes.cannotBeResolved:
+  //         case cliErrorTypes.errorStatusReceived:
+  //           errorMessageToShow = "Invalid URL.";
+  //           break;
+  //         case cliErrorTypes.notASitemap:
+  //           errorMessageToShow = "Invalid sitemap.";
+  //           break;
+  //         case cliErrorTypes.browserError:
+  //           navigate('/error', { state: { isBrowserError: true }});
+  //           return;
+  //         case cliErrorTypes.systemError:
+  //         default:
+  //           errorMessageToShow = "Something went wrong. Please try again later.";
+  //       }
+  //       console.log(`status error: ${checkUrlResponse.statusCode}`);
+  //       setPrevUrlErrorMessage(errorMessageToShow);
+  //       return;
+  //     } else if (checkUrlResponse.statusCode) {
+  //       console.error(
+  //         `unexpected status error: (code ${checkUrlResponse.statusCode})`,
+  //         checkUrlResponse.message
+  //       );
+  //     }  
+  //   }
   };
 
   const areUserDetailsSet = name !== "" && email !== "";

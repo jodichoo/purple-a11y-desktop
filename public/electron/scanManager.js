@@ -11,6 +11,7 @@ const {
 } = require("crypto");
 const {
   enginePath,
+  appPath,
   getPathVariable,
   customFlowGeneratedScriptsPath,
   playwrightBrowsersPath,
@@ -31,6 +32,8 @@ const {
 const { env, report } = require("process");
 const { readUserDataFromFile, createExportDir } = require("./userDataManager");
 const { escape } = require("querystring");
+const { json } = require("react-router-dom");
+const { time } = require("console");
 const scanHistory = {};
 
 let currentChildProcess;
@@ -606,6 +609,25 @@ const init = (scanEvent) => {
       fs.mkdirSync(uploadFolderPath);
     }
     return uploadFolderPath;
+  })
+
+  ipcMain.handle("getErrorLog", async (event, timeOfScan, timeOfError) => {
+      const errorLogPath = path.join(appPath, 'errors.txt');
+  
+      const errorLog = fs.readFileSync(errorLogPath, 'utf-8');  
+      const regex = /{.*?}/gs; 
+      const entries = errorLog.match(regex);
+  
+      const allErrors = "";
+      for (entry of entries){
+        const jsonEntry = JSON.parse(entry);
+        const timeOfEntry = new Date(jsonEntry['timestamp'])
+        if (timeOfEntry.getTime()>=timeOfScan.getTime() && timeOfEntry.getTime()<=timeOfError.getTime()){
+          allErrors=allErrors.concat(entry,"\n")
+        }
+      }
+      console.log(allErrors);
+      return allErrors;
   })
 
   ipcMain.on("cleanUpCustomFlowScripts", async () => {
