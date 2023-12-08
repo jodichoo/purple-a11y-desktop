@@ -22,8 +22,9 @@ const ErrorPage = () => {
     if (state?.isBrowserError) {
       setIsBrowserError(state.isBrowserError);
     }
+    
     const getErrorLog = async () => {
-      const timeOfScan = state.timeOfScan;
+      const timeOfScan = state?.timeOfScan;
       const timeOfError = new Date();
       const log = await services.getErrorLog(timeOfScan, timeOfError);
       setErrorLog(log);

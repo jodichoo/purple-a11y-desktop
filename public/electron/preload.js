@@ -65,7 +65,7 @@ contextBridge.exposeInMainWorld("services", {
     const data = await ipcRenderer.invoke("getUserData");
     return data;
   },
-  getErrorLog: async(timeOfScan, timeOfError)=>{
+  getErrorLog: async (timeOfScan, timeOfError) => {
     const errorLog = await ipcRenderer.invoke("getErrorLog", timeOfScan, timeOfError);
     return errorLog;
   },
