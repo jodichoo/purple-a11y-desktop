@@ -68,22 +68,24 @@ const ErrorPage = () => {
           </>
         : <h1>Something went wrong! Please try again.</h1>
       }
-      {isCustomScan
-      ? (
-        <>
-        <button role="link" id='back-to-home-btn' onClick={handleBackToHome}>
-          <img src={returnIcon}></img>
-          &nbsp;Back To Home
-        </button>
-        <Button id="replay-btn" type="btn-primary" onClick={replayCustomFlow}>
-          Replay
-        </Button>
-        </>
-      )
-      : <Button role="link" type="btn-primary" onClick={handleBackToHome}>
-          Try Again
-        </Button>}
-      {errorLog&&<Button type="btn-secondary" onClick={copyErrorLog}>Copy Error Log</Button>}
+      <div className="btn-container">
+        {isCustomScan
+        ? (
+          <>
+          <button role="link" id='back-to-home-btn' onClick={handleBackToHome}>
+            <img src={returnIcon}></img>
+            &nbsp;Back To Home
+          </button>
+          <Button id="replay-btn" type="btn-primary" onClick={replayCustomFlow}>
+            Replay
+          </Button>
+          </>
+        )
+        : <Button role="link" type="btn-primary" onClick={handleBackToHome}>
+            Try Again
+          </Button>}
+        {errorLog&&<Button type="btn-secondary" onClick={copyErrorLog}>Copy Error Log</Button>}
+      </div>
     </div>
   );
 };
