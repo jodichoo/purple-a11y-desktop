@@ -48,10 +48,7 @@ const ErrorPage = () => {
   }
 
   const copyErrorLog=() => {
-    navigator.clipboard.writeText(errorLog);
-    console.log(errorLog,"check in fn")
-  
-    // Alert the copied text
+    navigator.clipboard.writeText(errorLog);  
     alert("Copied the text: " + errorLog);
   }
 

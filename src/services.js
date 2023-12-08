@@ -129,7 +129,6 @@ const getUserData = async () => {
 };
 
 const getErrorLog = async (timeOfScan, timeOfError) => {
-  console.log(timeOfScan, "services");
   const errorLog = await window.services.getErrorLog(timeOfScan, timeOfError);
   return errorLog;
 };

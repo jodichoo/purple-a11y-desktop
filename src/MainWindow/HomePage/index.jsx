@@ -147,7 +147,6 @@ const HomePage = ({ isProxy, appVersionInfo, setCompletedScanId }) => {
   const startScan = async (scanDetails) => {
     scanDetails.browser = isProxy ? "edge" : browser;
     const timeOfScan = new Date();
-    console.log(timeOfScan,"homepage index")
 
     if (scanDetails.scanUrl.length === 0) {
       setScanButtonIsClicked(false);
