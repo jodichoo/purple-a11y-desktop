@@ -618,20 +618,25 @@ const init = (scanEvent) => {
       const entries = errorLog.match(regex);
       let allErrors = "";
 
-      const exists =fs.existsSync( path );
+      const exists =fs.existsSync(errorLogPath);
       if (!exists) {
         allErrors="Log file (errors.txt) does not exist"
+        console.log(!exists)
+        return allErrors;
       }
-      console.log(!exists)
 
       try{
       fs.accessSync(errorLogPath, fs.constants.R_OK);
     } catch (err) { 
       console.error('No Read access', errorLogPath); 
       allErrors="Log file (errors.txt) cannot be read"
+      return allErrors;
     } 
 
-    for (const entry of entries){
+    if (entries==null){
+      allErrors = "Log file (errors.txt) is empty"
+    } else {
+      for (const entry of entries){
         const jsonEntry = JSON.parse(entry);
         const timeOfEntry = new Date(jsonEntry['timestamp']).getTime(); 
         if (timeOfEntry >= timeOfScan.getTime() && timeOfEntry <= timeOfError.getTime()){
@@ -641,7 +646,9 @@ const init = (scanEvent) => {
       if (allErrors===""){
         allErrors ="Log file (errors.txt) has no new entries after scan"
       }
-      return allErrors;
+    }
+
+    return allErrors;
   })
 
   ipcMain.on("cleanUpCustomFlowScripts", async () => {
