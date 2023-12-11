@@ -613,18 +613,33 @@ const init = (scanEvent) => {
 
   ipcMain.handle("getErrorLog", async (event, timeOfScan, timeOfError) => {
       const errorLogPath = path.join(appPath, 'errors.txt');
-  
       const errorLog = fs.readFileSync(errorLogPath, 'utf-8');  
       const regex = /{.*?}/gs; 
       const entries = errorLog.match(regex);
-  
       let allErrors = "";
-      for (const entry of entries){
+
+      const exists =fs.existsSync( path );
+      if (!exists) {
+        allErrors="Log file (errors.txt) does not exist"
+      }
+      console.log(!exists)
+
+      try{
+      fs.accessSync(errorLogPath, fs.constants.R_OK);
+    } catch (err) { 
+      console.error('No Read access', errorLogPath); 
+      allErrors="Log file (errors.txt) cannot be read"
+    } 
+
+    for (const entry of entries){
         const jsonEntry = JSON.parse(entry);
         const timeOfEntry = new Date(jsonEntry['timestamp']).getTime(); 
         if (timeOfEntry >= timeOfScan.getTime() && timeOfEntry <= timeOfError.getTime()){
           allErrors = allErrors.concat(entry,"\n")
         }
+      }
+      if (allErrors===""){
+        allErrors ="Log file (errors.txt) has no new entries after scan"
       }
       return allErrors;
   })
