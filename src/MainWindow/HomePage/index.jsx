@@ -175,9 +175,6 @@ const HomePage = ({ isProxy, appVersionInfo, setCompletedScanId }) => {
     window.localStorage.setItem("scanDetails", JSON.stringify(scanDetails));
 
     const checkUrlResponse = await services.validateUrlConnectivity(scanDetails);
-    //todo: delete later
-    // navigate("/error", { state: { timeOfScan }});
-    //         return; 
     if (checkUrlResponse.success) {
        if (scanDetails.scanType === 'Custom flow') {
           navigate('/custom_flow', { state: { scanDetails }});
